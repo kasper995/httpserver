@@ -23,10 +23,14 @@ namespace httpserver
             Stream ns = connectionSocket.GetStream();
             StreamReader sr = new StreamReader(ns);
             StreamWriter sw = new StreamWriter(ns);
+            
             sw.AutoFlush = true; // enable automatic flushing
 
-          
-
+            string message = sr.ReadLine();
+            Console.WriteLine("hello");
+            sw.Write("HTTP/1.0 200 Ok\r\n");
+            sw.Write("\r\n");
+            sw.Write("hello");
             ns.Close();
             connectionSocket.Close();
             serverSocket.Stop();

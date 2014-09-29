@@ -8,16 +8,17 @@ using System.Threading.Tasks;
 
 namespace httpserver
 {
-    class HTTPService
+    internal class HTTPService
     {
-       
-       private TcpClient connectionSocket;
+
+        private TcpClient connectionSocket;
 
 
-       public HTTPService(TcpClient connectionSocket)
+        public HTTPService(TcpClient connectionSocket)
         {
-           this.connectionSocket = connectionSocket;
+            this.connectionSocket = connectionSocket;
         }
+
         internal void SocketHandler()
         {
             Stream ns = connectionSocket.GetStream();
@@ -25,10 +26,11 @@ namespace httpserver
             StreamWriter sw = new StreamWriter(ns);
             sw.AutoFlush = true; // enable automatic flushing
 
-          
+
             connectionSocket.Close();
-        
+
+        }
     }
 }
-    }
-}
+    
+
