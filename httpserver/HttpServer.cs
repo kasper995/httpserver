@@ -16,18 +16,19 @@ namespace httpserver
         {
             while (true)
             {
+
+
+                TcpListener serverSocket = new TcpListener(DefaultPort);
+                serverSocket.Start();
+
+
+                TcpClient connectionSocket = serverSocket.AcceptTcpClient();
+                Stream ns = connectionSocket.GetStream();
+                StreamReader sr = new StreamReader(ns);
                 
-               
-            TcpListener serverSocket = new TcpListener(DefaultPort);
-            serverSocket.Start();
-           
+                StreamWriter sw = new StreamWriter(ns);
 
-               TcpClient connectionSocket = serverSocket.AcceptTcpClient();
-                    Stream ns = connectionSocket.GetStream();
-                    StreamReader sr = new StreamReader(ns);
-                    StreamWriter sw = new StreamWriter(ns);
-
-                    sw.AutoFlush = true; // enable automatic flushing
+                sw.AutoFlush = true; // enable automatic flushing
                 try
                 {
 
@@ -36,7 +37,8 @@ namespace httpserver
                     
                     sw.Write("HTTP/1.0 200 Ok\r\n");
                     sw.Write("\r\n");
-                    sw.Write("hello world");
+                    sw.Write("you have requested file {0}", message);
+                    
                 }
                 finally
                 {
@@ -45,7 +47,7 @@ namespace httpserver
                     serverSocket.Stop();
                 }
             }
-            }
         }
     }
+}
 
