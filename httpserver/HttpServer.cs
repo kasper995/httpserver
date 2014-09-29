@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,17 +30,21 @@ namespace httpserver
                 StreamWriter sw = new StreamWriter(ns);
 
                 sw.AutoFlush = true; // enable automatic flushing
+                
                 try
                 {
 
-
                     string message = sr.ReadLine();
+                    string[] words = message.Split(' ');
+                    string doh = words[1].Replace("/", "");
                     
+
                     sw.Write("HTTP/1.0 200 Ok\r\n");
                     sw.Write("\r\n");
-                    sw.Write("you have requested file {0}", message);
+                    sw.Write("you have requested file {0}", doh);
                     
                 }
+                    
                 finally
                 {
                     ns.Close();
