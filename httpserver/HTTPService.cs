@@ -6,31 +6,29 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace httpserver
 {
-    public class HttpServer
+    class HTTPService
     {
-        public static readonly int DefaultPort = 8888;
-        public void StartServer()
+       
+       private TcpClient connectionSocket;
+
+
+       public HTTPService(TcpClient connectionSocket)
         {
-            TcpListener serverSocket = new TcpListener(DefaultPort);
-            serverSocket.Start();
-
-            TcpClient connectionSocket = serverSocket.AcceptTcpClient();
-            
-
+           this.connectionSocket = connectionSocket;
+        }
+        internal void SocketHandler()
+        {
             Stream ns = connectionSocket.GetStream();
             StreamReader sr = new StreamReader(ns);
             StreamWriter sw = new StreamWriter(ns);
             sw.AutoFlush = true; // enable automatic flushing
 
           
-
-            ns.Close();
             connectionSocket.Close();
-            serverSocket.Stop();
-
-        }
+        
+    }
+}
     }
 }
