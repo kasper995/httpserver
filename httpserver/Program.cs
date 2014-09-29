@@ -10,8 +10,8 @@ namespace httpserver
     {
         static void Main(string[] args)
         {
-            HttpServer h1 = new HttpServer();
-            h1.StartServer();
+            HttpServer h1 = new HttpServer(); //laver den nye server
+            Parallel.Invoke(h1.StartServer); // starter forskellige tråde
         }
     }
 }
