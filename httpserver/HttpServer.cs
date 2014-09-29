@@ -41,15 +41,15 @@ namespace httpserver
 
                     string message = sr.ReadLine();
                     string[] words = message.Split(' ');
-                    string doh = words[1];
+                    string doh = words[1].Replace("/","\\");
                   
                     string doh2 = RootCatalog + doh;
 
 
                     if (File.Exists(doh2))
                     {
-                        string dd = File.ReadAllText(doh2);
-                        sw.Write(dd);
+                        string ftext = File.ReadAllText(doh2);
+                        sw.Write(ftext);
                     }
 
                     else
@@ -57,6 +57,10 @@ namespace httpserver
                         sw.Write("HTTP/1.0 200 Ok\r\n");
                         sw.Write("\r\n");
                         sw.Write("the requested file or homepagde do not exist");
+                        sw.Write(" {0}", doh2);
+
+
+
                     }
                     
                     //sw.Write("you have requested file {0}", doh2);
