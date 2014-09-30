@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Net.Sockets;
 using System.Reflection.Emit;
 using System.Runtime.Remoting.Messaging;
@@ -18,16 +19,18 @@ namespace httpserver
 {
     public class HttpServer
     {
+        private static readonly string Version = "HTTP/1.0";
         public static readonly int DefaultPort = 8888; // den valgte port
         private static readonly string RootCatalog = "C:\\Windows\\Temp"; //rootcaltalog som angiver stien til filen
         readonly EventLog Mylog = new EventLog();
-       
+        TcpListener serverSocket = new TcpListener(IPAddress.Any, DefaultPort); // laver serveren
         public void StartServer()
         {
             Mylog.Source = "Httpserver";
+            
             while (true)
             {
-                TcpListener serverSocket = new TcpListener(DefaultPort); // laver serveren
+                
                 serverSocket.Start(); //starter serveren
                 TcpClient connectionSocket = serverSocket.AcceptTcpClient(); //sætter sockets til at acceptere clienten
                 Stream ns = connectionSocket.GetStream(); //laver en stream
@@ -46,7 +49,7 @@ namespace httpserver
                    
                     if (File.Exists(Path)) // checker om filen findes
                     {
-                        sw.Write("HTTP/1.0 200\r\n"); // sender header til browseren
+                        sw.Write("{0} 200\r\n", Version); // sender header til browseren
                         sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         string ftext = File.ReadAllText(Path); // samler filnen i en string der hedder ftext hvis den kan læses
                         sw.Write(ftext); // sender stringen til browseren så den kan læses
@@ -54,19 +57,19 @@ namespace httpserver
 
                     if (words[2] != "HTTP/1.1") //checker om http versionen er 1.0
                     {
-                        sw.Write("HTTP/1.0 400\r\n"); // sender header til browserensw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
+                        sw.Write("{0} 400\r\n", Version); // sender header til browserensw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("The Http protocol u have chosen are invalid"); // sender svar tilbage til browseren om at protokolen er forkert
                     }
                     if (words[0] != "GET" && words[0] != "POST") // hvis det først ord i din request ikke er post eller get så gør
                     {
-                        sw.Write("HTTP/1.0 400\r\n"); // sender header til browseren
+                        sw.Write("{0} 400\r\n", Version); // sender header til browseren
                         sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("Bad Request did not send a Get or Post request"); // sender svar tilbage til browseren om at protokolen er forkert
                     }
                     if (words[1] == "") // hvis det din request er tom
                     {
-                        sw.Write("HTTP/1.0 204\r\n"); // sender header til browseren
+                        sw.Write("{0} 204\r\n", Version); // sender header til browseren
                         sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("You have not chosen any content"); // sender svar tilbage til browseren om at serveren ikke har det de søger
 
@@ -74,7 +77,7 @@ namespace httpserver
 
                     if (RootCatalog == Path) // checker om din request er tom
                     {
-                        sw.Write("HTTP/1.0 204\r\n"); // sender header til browseren
+                        sw.Write("{0} 204\r\n", Version); // sender header til browseren
                         sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("You have not chosen any content"); // sender svar tilbage til browseren om at serveren ikke har det de søger
 
@@ -82,7 +85,7 @@ namespace httpserver
                         
                     else
                     {
-                        sw.Write("HTTP/1.0 404\r\n"); // sender header til browseren
+                        sw.Write("{0} 404\r\n", Version); // sender header til browseren
                         sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("the requested file or homepagde {0} do not exist", Path); // sender svar tilbage til browseren om at serveren ikke har det de søger
                     }
