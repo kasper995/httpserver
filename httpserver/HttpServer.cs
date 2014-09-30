@@ -55,19 +55,19 @@ namespace httpserver
                         sw.Write(ftext); // sender stringen til browseren så den kan læses
                     }
 
-                    if (words[2] != "HTTP/1.1") //checker om http versionen er 1.0
+                    else if (words[2] != "HTTP/1.1") //checker om http versionen er 1.0
                     {
                         sw.Write("{0} 400\r\n", Version); // sender header til browserensw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("The Http protocol u have chosen are invalid"); // sender svar tilbage til browseren om at protokolen er forkert
                     }
-                    if (words[0] != "GET" && words[0] != "POST") // hvis det først ord i din request ikke er post eller get så gør
+                    else if (words[0] != "GET" && words[0] != "POST") // hvis det først ord i din request ikke er post eller get så gør
                     {
                         sw.Write("{0} 400\r\n", Version); // sender header til browseren
                         sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("Bad Request did not send a Get or Post request"); // sender svar tilbage til browseren om at protokolen er forkert
                     }
-                    if (words[1] == "") // hvis det din request er tom
+                    else if (words[1] == "") // hvis det din request er tom
                     {
                         sw.Write("{0} 204\r\n", Version); // sender header til browseren
                         sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
@@ -75,7 +75,7 @@ namespace httpserver
 
                     }
 
-                    if (RootCatalog == Path) // checker om din request er tom
+                    else  if (RootCatalog == Path) // checker om din request er tom
                     {
                         sw.Write("{0} 204\r\n", Version); // sender header til browseren
                         sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
