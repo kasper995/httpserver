@@ -38,7 +38,7 @@ namespace httpserver
                 Stream ns = connectionSocket.GetStream(); //laver en stream
                 StreamReader sr = new StreamReader(ns); // laver en streamreader der hedder sr
                 StreamWriter sw = new StreamWriter(ns) { AutoFlush = true }; // laver en streamwriter der hedder sw
-
+                _mylog.WriteEntry("Server started", EventLogEntryType.Information, 0);
                 try
                 {
                     string message = sr.ReadLine(); // læser htlm requesten
