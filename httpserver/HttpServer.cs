@@ -34,25 +34,30 @@ namespace httpserver
        
         public void StartServer()
         {
-            
-           
+
+            _serverSocket.Start(); //starter serveren
+            TcpClient connectionSocket = _serverSocket.AcceptTcpClient(); //sætter sockets til at acceptere clienten
 
             _mylog.Source = "myserver";
+
             while (true)
 
             {
                 
-                _serverSocket.Start(); //starter serveren
-                TcpClient connectionSocket = _serverSocket.AcceptTcpClient(); //sætter sockets til at acceptere clienten
-                Stream ns = connectionSocket.GetStream(); //laver en stream
-                Sockethandler(ns);
                 
-                connectionSocket.Close(); // lukker connectionsocket ned
+                Task t1 = Task.Run(() => Sockethandler(connectionSocket));
+                
+              
+               
+                
+                
             }
         }
         
-        public void Sockethandler(Stream ns)
+        public void Sockethandler(TcpClient connectionSocket)
         {
+            Stream ns = connectionSocket.GetStream(); //laver en stream
+            
             StreamReader sr = new StreamReader(ns); // laver en streamreader der hedder sr
             StreamWriter sw = new StreamWriter(ns) { AutoFlush = true }; // laver en streamwriter der hedder sw
             _mylog.WriteEntry("Server started", EventLogEntryType.Information, 1);
