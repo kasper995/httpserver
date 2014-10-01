@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 
 
 
-
 namespace httpserver
 {
     public class HttpServer
@@ -34,30 +33,20 @@ namespace httpserver
        
         public void StartServer()
         {
-
-            _serverSocket.Start(); //starter serveren
-            TcpClient connectionSocket = _serverSocket.AcceptTcpClient(); //sætter sockets til at acceptere clienten
-
             _mylog.Source = "myserver";
-
             while (true)
-
             {
-                
-                
-                Task t1 = Task.Run(() => Sockethandler(connectionSocket));
-                
-              
-               
-                
-                
+                _serverSocket.Start(); //starter serveren
+                TcpClient connectionSocket = _serverSocket.AcceptTcpClient(); //sætter sockets til at acceptere clienten
+                Stream ns = connectionSocket.GetStream(); //laver en stream
+                Sockethandler(ns);
+                Task t1 = Task.Run(() => Sockethandler(ns));
+                connectionSocket.Close(); // lukker connectionsocket ned
             }
         }
         
-        public void Sockethandler(TcpClient connectionSocket)
+        public void Sockethandler(Stream ns)
         {
-            Stream ns = connectionSocket.GetStream(); //laver en stream
-            
             StreamReader sr = new StreamReader(ns); // laver en streamreader der hedder sr
             StreamWriter sw = new StreamWriter(ns) { AutoFlush = true }; // laver en streamwriter der hedder sw
             _mylog.WriteEntry("Server started", EventLogEntryType.Information, 1);
@@ -75,20 +64,21 @@ namespace httpserver
                     string extensions = Path.GetExtension(path);
                     var type = new Contenthandler(extensions);
                     var f1 = new FileInfo(path);
-                    var f2 = f1.Length;
+                   
 
                     if (File.Exists(path)) // checker om filen findes
                     {
-
+                        var f2 = f1.Length;
                         sw.Write("{0} 200 OK\r\n", Version); // sender header til browseren
                         sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
                         string ftext = File.ReadAllText(path); // samler filnen i en string der hedder ftext hvis den kan læses
                         sw.Write(ftext); // sender stringen til browseren så den kan læses
                         Console.WriteLine("{0} 200 OK", Version);
+                        Console.WriteLine("Content-Length: " + f2);
                         
                     }
 
-                    else if (words[2] != "HTTP/1.1") //checker om http versionen er 1.1
+                    else if (words[2] != "HTTP/1.1" && words[2] != "HTTP/1.0") //checker om http versionen er 1.1
                     {
                         sw.Write("{0} 400 Bad Request\r\n", Version); // sender header til browserensw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
@@ -96,7 +86,7 @@ namespace httpserver
                         Console.WriteLine("{0} 400 Bad Request", Version);
                     }
 
-                    else if (words[0] == "GET" && words[0] == "POST") // hvis det først ord i din request ikke er post eller get så gør
+                    else if (words[0] != "GET" && words[0] != "POST") // hvis det først ord i din request ikke er post eller get så gør
                     {
                         sw.Write("{0} 400 Bad Request\r\n", Version); // sender header til browseren
                         sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
@@ -117,7 +107,7 @@ namespace httpserver
                     Console.WriteLine(time); // skriver tiden ud til consol
                     Console.WriteLine("someone searched for {0}", path); //skriver ud til consolen 
                     Console.WriteLine(type.Exstensiontype());
-                    Console.WriteLine("Content-Length: " + f2);
+                    
                 }
 
 
