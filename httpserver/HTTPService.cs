@@ -22,9 +22,8 @@ namespace httpserver
         internal void SocketHandler()
         {
             Stream ns = connectionSocket.GetStream();
-            StreamReader sr = new StreamReader(ns);
-            StreamWriter sw = new StreamWriter(ns);
-            sw.AutoFlush = true; // enable automatic flushing
+            var sr = new StreamReader(ns);
+            var sw = new StreamWriter(ns) {AutoFlush = true};
 
 
             connectionSocket.Close();

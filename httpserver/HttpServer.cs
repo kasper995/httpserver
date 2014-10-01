@@ -22,10 +22,12 @@ namespace httpserver
     {
         private const string Version = "HTTP/1.0";
         public static readonly int DefaultPort = 8888; // den valgte port
-        private const string RootCatalog = "C:\\Windows\\Temp"; //rootcaltalog som angiver stien til filen
+        private const string RootCatalog = "C:\\Temp"; //rootcaltalog som angiver stien til filen
         readonly EventLog _mylog = new EventLog();
+        readonly string Line = "\r\n";
 
         readonly TcpListener _serverSocket = new TcpListener(IPAddress.Any, DefaultPort); // laver serveren
+        
         public void StartServer()
         {
             _mylog.Source = "Httpserver";
@@ -38,44 +40,58 @@ namespace httpserver
                 Stream ns = connectionSocket.GetStream(); //laver en stream
                 StreamReader sr = new StreamReader(ns); // laver en streamreader der hedder sr
                 StreamWriter sw = new StreamWriter(ns) { AutoFlush = true }; // laver en streamwriter der hedder sw
-                _mylog.WriteEntry("Server started", EventLogEntryType.Information, 0);
+                
                 try
                 {
                     string message = sr.ReadLine(); // læser htlm requesten
-
+                    
                     if (message != null) // checker om requesten er tom
                     {
                         string[] words = message.Split(' '); //laver et array med ordene fra message så hvert ord 
                         string name = words[1].Replace("/", "\\"); // bytter alle / ud med \, 
-                        string Path = RootCatalog + name; // tager rootcatalog og dog samler dem i en ny string doh2
-
-                        if (File.Exists(Path)) // checker om filen findes
+                        string path = RootCatalog + name; // tager rootcatalog og dog samler dem i en ny string doh2
+                        string extensions = Path.GetExtension(path);
+                        
+                        Console.WriteLine(extensions);
+                        if (File.Exists(path)) // checker om filen findes
                         {
-                            sw.Write("{0} 200\r\n", Version); // sender header til browseren
-                            sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
-                            string ftext = File.ReadAllText(Path); // samler filnen i en string der hedder ftext hvis den kan læses
-                            sw.Write(ftext); // sender stringen til browseren så den kan læses
+                            if (extensions == ".txt" || extensions == ".html")
+                            {
+                                sw.Write("{0} 200 Ok\r\n", Version); // sender header til browseren
+                                sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
+                                string ftext = File.ReadAllText(path); // samler filnen i en string der hedder ftext hvis den kan læses
+                                sw.Write(ftext); // sender stringen til browseren så den kan læses
+                            }
+                                
+                            else if (extensions == ".gif")
+                            {
+                                sw.Write("{0} 200 Ok\r\n", Version); // sender header til browseren
+                                sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
+                                
+                                
+                            }
+                            
                         }
 
-                        else if (words[2] != "HTTP/1.1") //checker om http versionen er 1.0
+                        else if (words[2] != "HTTP/1.1") //checker om http versionen er 1.1
                         {
-                            sw.Write("{0} 400\r\n", Version); // sender header til browserensw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
-                            sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
+                            sw.Write("{0} 400 Bad Request\r\n", Version); // sender header til browserensw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
+                            sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
                             sw.Write("The Http protocol u have chosen are invalid"); // sender svar tilbage til browseren om at protokolen er forkert
                         }
 
                         else if (words[0] == "GET" && words[0] == "POST") // hvis det først ord i din request ikke er post eller get så gør
                         {
-                            sw.Write("{0} 400\r\n", Version); // sender header til browseren
-                            sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
+                            sw.Write("{0} 400 Bad Request\r\n", Version); // sender header til browseren
+                            sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
                             sw.Write("Bad Request did not send a Get or Post request"); // sender svar tilbage til browseren om at protokolen er forkert
                         }
                       
                         else
                         {
-                            sw.Write("{0} 404\r\n", Version); // sender header til browseren
-                            sw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
-                            sw.Write("the requested file or homepagde {0} do not exist", Path); // sender svar tilbage til browseren om at serveren ikke har det de søger
+                            sw.Write("{0} 404 Not Found\r\n", Version); // sender header til browseren
+                            sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
+                            sw.Write("the requested file or homepagde {0} do not exist", path); // sender svar tilbage til browseren om at serveren ikke har det de søger
                         }
                     }
                 }
