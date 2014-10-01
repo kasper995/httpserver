@@ -11,7 +11,7 @@ namespace httpserver
     internal class HTTPService
     {
 
-        private TcpClient connectionSocket;
+        private readonly TcpClient connectionSocket;
 
 
         public HTTPService(TcpClient connectionSocket)

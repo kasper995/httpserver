@@ -7,22 +7,24 @@ using System.Threading.Tasks;
 
 namespace httpserver
 {
-    class Contenthandler
+    public class Contenthandler
     {
-        private string _exstensions;
+        private readonly string _exstensions;
 
-        public Contenthandler(string exstensions)
+        public Contenthandler(string extensions)
         {
-            _exstensions = exstensions;
+            _exstensions = extensions;
         }
 
-        public string ex()
+        public string Exstensiontype()
         {
+            const string output = "content type: ";
+
             if (_exstensions == ".HTML")
             {
                 return output + "text/html";
             }
-            if (_exstensions == ".doc")
+           if (_exstensions == ".doc")
             {
                 return output + "application/msword";
             }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Net.Mime;
 using System.Net.Sockets;
 using System.Reflection.Emit;
 using System.Runtime.Remoting.Messaging;
@@ -51,25 +53,19 @@ namespace httpserver
                         string name = words[1].Replace("/", "\\"); // bytter alle / ud med \, 
                         string path = RootCatalog + name; // tager rootcatalog og dog samler dem i en ny string doh2
                         string extensions = Path.GetExtension(path);
+                        var type = new Contenthandler(extensions);
                         
-                        Console.WriteLine(extensions);
+                       
                         if (File.Exists(path)) // checker om filen findes
                         {
-                            if (extensions == ".txt" || extensions == ".html")
-                            {
+                            
                                 sw.Write("{0} 200 Ok\r\n", Version); // sender header til browseren
                                 sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
                                 string ftext = File.ReadAllText(path); // samler filnen i en string der hedder ftext hvis den kan læses
                                 sw.Write(ftext); // sender stringen til browseren så den kan læses
-                            }
+                            
                                 
-                            else if (extensions == ".gif")
-                            {
-                                sw.Write("{0} 200 Ok\r\n", Version); // sender header til browseren
-                                sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
-                                
-                                
-                            }
+                           
                             
                         }
 
@@ -93,7 +89,11 @@ namespace httpserver
                             sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
                             sw.Write("the requested file or homepagde {0} do not exist", path); // sender svar tilbage til browseren om at serveren ikke har det de søger
                         }
+                        Console.WriteLine();
+                        Console.WriteLine(type.Exstensiontype());
                     }
+                    
+
                 }
 
                 catch (Exception)
