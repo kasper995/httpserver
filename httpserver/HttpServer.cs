@@ -33,17 +33,18 @@ namespace httpserver
         
         public void StartServer()
         {
-            
-           
+
+            _mylog.Source = "myserver";
             while (true)
             {
+                //Task t1 = new Task();
 
                 _serverSocket.Start(); //starter serveren
                 TcpClient connectionSocket = _serverSocket.AcceptTcpClient(); //sætter sockets til at acceptere clienten
                 Stream ns = connectionSocket.GetStream(); //laver en stream
                 StreamReader sr = new StreamReader(ns); // laver en streamreader der hedder sr
                 StreamWriter sw = new StreamWriter(ns) { AutoFlush = true }; // laver en streamwriter der hedder sw
-                
+                _mylog.WriteEntry("Server started" , EventLogEntryType.Information, 1);
                 try
                 {
                     string message = sr.ReadLine(); // læser htlm requesten
@@ -103,10 +104,7 @@ namespace httpserver
 
                 }
 
-                catch (Exception)
-                {
-                    throw new Exception();
-                }
+                
 
                 finally
                 {
