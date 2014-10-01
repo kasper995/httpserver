@@ -28,9 +28,10 @@ namespace httpserver
         private const string RootCatalog = "C:\\Temp"; //rootcaltalog som angiver stien til filen
         readonly EventLog _mylog = new EventLog();
 
-
+        
         readonly TcpListener _serverSocket = new TcpListener(IPAddress.Any, DefaultPort); // laver serveren
 
+       
         public void StartServer()
         {
             
@@ -40,14 +41,16 @@ namespace httpserver
             while (true)
 
             {
+                
                 _serverSocket.Start(); //starter serveren
                 TcpClient connectionSocket = _serverSocket.AcceptTcpClient(); //sætter sockets til at acceptere clienten
                 Stream ns = connectionSocket.GetStream(); //laver en stream
-                
                 Sockethandler(ns);
+                
                 connectionSocket.Close(); // lukker connectionsocket ned
             }
         }
+        
         public void Sockethandler(Stream ns)
         {
             StreamReader sr = new StreamReader(ns); // laver en streamreader der hedder sr
@@ -59,12 +62,15 @@ namespace httpserver
 
                 if (message != null) // checker om requesten er tom
                 {
+                    _mylog.WriteEntry("Browser request modtaget", EventLogEntryType.Information, 2);
+
                     string[] words = message.Split(' '); //laver et array med ordene fra message så hvert ord 
                     string name = words[1].Replace("/", "\\"); // bytter alle / ud med \, 
                     string path = RootCatalog + name; // tager rootcatalog og dog samler dem i en ny string doh2
                     string extensions = Path.GetExtension(path);
                     var type = new Contenthandler(extensions);
-
+                    var f1 = new FileInfo(path);
+                    var f2 = f1.Length;
 
                     if (File.Exists(path)) // checker om filen findes
                     {
@@ -74,9 +80,7 @@ namespace httpserver
                         string ftext = File.ReadAllText(path); // samler filnen i en string der hedder ftext hvis den kan læses
                         sw.Write(ftext); // sender stringen til browseren så den kan læses
                         Console.WriteLine("{0} 200 OK", Version);
-
-
-
+                        
                     }
 
                     else if (words[2] != "HTTP/1.1") //checker om http versionen er 1.1
@@ -102,11 +106,13 @@ namespace httpserver
                         sw.Write("the requested file or homepagde {0} do not exist", path); // sender svar tilbage til browseren om at serveren ikke har det de søger
                         Console.WriteLine("{0} 404 Not Found", Version);
                     }
-
+                    _mylog.WriteEntry("Browser har modtaget svar på request", EventLogEntryType.Information, 3);
+                    
                     string time = DateTime.Today.ToLongDateString() + " " + DateTime.Now.ToLongTimeString(); // laver en string der gemmer tiden lige nu
                     Console.WriteLine(time); // skriver tiden ud til consol
                     Console.WriteLine("someone searched for {0}", path); //skriver ud til consolen 
                     Console.WriteLine(type.Exstensiontype());
+                    Console.WriteLine("Content-Length: " + f2);
                 }
 
 
@@ -116,6 +122,8 @@ namespace httpserver
 
             finally
             {
+                _mylog.WriteEntry("server lukker ned", EventLogEntryType.Information, 4);
+
                 ns.Close(); // lukker streamen ns ned
 
                 _serverSocket.Stop(); // lukker serversocket ned
