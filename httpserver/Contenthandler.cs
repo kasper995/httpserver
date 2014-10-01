@@ -13,38 +13,42 @@ namespace httpserver
 
         public Contenthandler(string extensions)
         {
-            _exstensions = extensions;
+             _exstensions = extensions;
         }
 
-        public string Exstensiontype()
+       public string Exstensiontype()
         {
             const string output = "content type: ";
 
-            if (_exstensions == ".HTML")
+            if (_exstensions == ".txt")
             {
-                return output + "text/html";
+                return output + "Text/txt";
             }
-           if (_exstensions == ".doc")
+            if (_exstensions == ".html")
             {
-                return output + "application/msword";
+                return output + "Text/html";
+            }
+            if (_exstensions == ".doc")
+            {
+                return output + "Application/msword";
             }
             if (_exstensions == ".gif")
             {
-                return output + "image/gif";
+                return output + "Image/gif";
             }
             if (_exstensions == ".jpg")
             {
-                return output + "image/jpeg";
+                return output + "Image/jpeg";
             }
             if (_exstensions == ".pdf")
             {
-                return output + "application/pdf";
+                return output + "Application/pdf";
             }
             if (_exstensions == ".css")
             {
-                return output + "text/css";
+                return output + "Text/css";
             }
-            if (_exstensions == ".xml")
+            if (_exstensions == ".Xml")
             {
                 return output + "text/xml";
             }
@@ -53,7 +57,7 @@ namespace httpserver
                 return output + "application/x-java-archive";
             }
 
-            return output + "application/octet-stream";
+           return output + "application/octet-stream";
 
         }
 

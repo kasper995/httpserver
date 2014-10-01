@@ -22,18 +22,19 @@ namespace httpserver
 {
     public class HttpServer
     {
+        readonly string Line = "\r\n";
         private const string Version = "HTTP/1.0";
         public static readonly int DefaultPort = 8888; // den valgte port
         private const string RootCatalog = "C:\\Temp"; //rootcaltalog som angiver stien til filen
         readonly EventLog _mylog = new EventLog();
-        readonly string Line = "\r\n";
+        
 
         readonly TcpListener _serverSocket = new TcpListener(IPAddress.Any, DefaultPort); // laver serveren
         
         public void StartServer()
         {
-            _mylog.Source = "Httpserver";
-
+            
+           
             while (true)
             {
 
@@ -63,7 +64,7 @@ namespace httpserver
                                 sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
                                 string ftext = File.ReadAllText(path); // samler filnen i en string der hedder ftext hvis den kan læses
                                 sw.Write(ftext); // sender stringen til browseren så den kan læses
-                            
+                            Console.WriteLine("{0} 200 ok",Version);
                                 
                            
                             
@@ -74,6 +75,7 @@ namespace httpserver
                             sw.Write("{0} 400 Bad Request\r\n", Version); // sender header til browserensw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                             sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
                             sw.Write("The Http protocol u have chosen are invalid"); // sender svar tilbage til browseren om at protokolen er forkert
+                            Console.WriteLine("{0} 400 Bad Request", Version);
                         }
 
                         else if (words[0] == "GET" && words[0] == "POST") // hvis det først ord i din request ikke er post eller get så gør
@@ -81,6 +83,7 @@ namespace httpserver
                             sw.Write("{0} 400 Bad Request\r\n", Version); // sender header til browseren
                             sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
                             sw.Write("Bad Request did not send a Get or Post request"); // sender svar tilbage til browseren om at protokolen er forkert
+                            Console.WriteLine("{0} 400 Bad Request", Version);
                         }
                       
                         else
@@ -88,8 +91,12 @@ namespace httpserver
                             sw.Write("{0} 404 Not Found\r\n", Version); // sender header til browseren
                             sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
                             sw.Write("the requested file or homepagde {0} do not exist", path); // sender svar tilbage til browseren om at serveren ikke har det de søger
+                            Console.WriteLine("{0} 404 Not Found", Version);
                         }
-                        Console.WriteLine();
+
+                        string time = DateTime.Today.ToLongDateString() + " " + DateTime.Now.ToLongTimeString(); // laver en string der gemmer tiden lige nu
+                        Console.WriteLine(time); // skriver tiden ud til consol
+                        Console.WriteLine("someone searched for {0}", path); //skriver ud til consolen 
                         Console.WriteLine(type.Exstensiontype());
                     }
                     
