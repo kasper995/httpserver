@@ -27,10 +27,10 @@ namespace httpserver
         private const string RootCatalog = "C:\\Temp"; //rootcaltalog som angiver stien til filen
         readonly EventLog _mylog = new EventLog();
 
-        
+
         readonly TcpListener _serverSocket = new TcpListener(IPAddress.Any, DefaultPort); // laver serveren
 
-       
+
         public void StartServer()
         {
             _mylog.Source = "myserver";
@@ -44,7 +44,7 @@ namespace httpserver
                 connectionSocket.Close(); // lukker connectionsocket ned
             }
         }
-        
+
         public void Sockethandler(Stream ns)
         {
             StreamReader sr = new StreamReader(ns); // laver en streamreader der hedder sr
@@ -64,25 +64,19 @@ namespace httpserver
                     string extensions = Path.GetExtension(path);
                     var type = new Contenthandler(extensions);
                     var f1 = new FileInfo(path);
-                   
 
-                    if (File.Exists(path)) // checker om filen findes
-                    {
-                        var f2 = f1.Length;
-                        sw.Write("{0} 200 OK\r\n", Version); // sender header til browseren
-                        sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
-                        string ftext = File.ReadAllText(path); // samler filnen i en string der hedder ftext hvis den kan læses
-                        sw.Write(ftext); // sender stringen til browseren så den kan læses
-                        Console.WriteLine("{0} 200 OK", Version);
-                        Console.WriteLine("Content-Length: " + f2);
-                        
-                    }
 
-                    else if (words[2] != "HTTP/1.1" && words[2] != "HTTP/1.0") //checker om http versionen er 1.1
+
+
+
+
+                    if (words[2] != "HTTP/1.1" && words[2] != "HTTP/1.0") //checker om http versionen er 1.1
                     {
-                        sw.Write("{0} 400 Bad Request\r\n", Version); // sender header til browserensw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
+                        sw.Write("{0} 400 Bad Request\r\n", Version);
+                        // sender header til browserensw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
-                        sw.Write("The Http protocol u have chosen are invalid"); // sender svar tilbage til browseren om at protokolen er forkert
+                        sw.Write("The Http protocol u have chosen are invalid");
+                        // sender svar tilbage til browseren om at protokolen er forkert
                         Console.WriteLine("{0} 400 Bad Request", Version);
                     }
 
@@ -90,24 +84,53 @@ namespace httpserver
                     {
                         sw.Write("{0} 400 Bad Request\r\n", Version); // sender header til browseren
                         sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
-                        sw.Write("Bad Request did not send a Get or Post request"); // sender svar tilbage til browseren om at protokolen er forkert
+                        sw.Write("Bad Request did not send a Get or Post request");
+                        // sender svar tilbage til browseren om at protokolen er forkert
                         Console.WriteLine("{0} 400 Bad Request", Version);
+                    }
+
+                    else if (words[0] == "POST")
+                    {
+                        sw.Write("{0} 200 xxx", Version);
+                        sw.Write("{0}", Line);
+                        sw.Write("dadada");
+
+                    }
+                    else  if (File.Exists(path))
+                    {
+
+
+
+                        sw.Write("{0} 200 OK\r\n", Version); // sender header til browseren
+                        sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
+                        string ftext = File.ReadAllText(path);
+                        // samler filnen i en string der hedder ftext hvis den kan læses
+                        sw.Write(ftext); // sender stringen til browseren så den kan læses
+                        Console.WriteLine("{0} 200 OK", Version);
+
+                        var f2 = f1.Length;
+                        Console.WriteLine("Content-Length: " + f2);
+
                     }
 
                     else
                     {
                         sw.Write("{0} 404 Not Found\r\n", Version); // sender header til browseren
                         sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
-                        sw.Write("the requested file or homepagde {0} do not exist", path); // sender svar tilbage til browseren om at serveren ikke har det de søger
+                        sw.Write("the requested file or homepagde {0} do not exist", path);
+                        // sender svar tilbage til browseren om at serveren ikke har det de søger
                         Console.WriteLine("{0} 404 Not Found", Version);
                     }
                     _mylog.WriteEntry("Browser har modtaget svar på request", EventLogEntryType.Information, 3);
-                    
+
                     string time = DateTime.Today.ToLongDateString() + " " + DateTime.Now.ToLongTimeString(); // laver en string der gemmer tiden lige nu
                     Console.WriteLine(time); // skriver tiden ud til consol
                     Console.WriteLine("someone searched for {0}", path); //skriver ud til consolen 
                     Console.WriteLine(type.Exstensiontype());
-                    
+                    Console.WriteLine(words[0]);
+                    Console.WriteLine(words[2]);
+                    Console.WriteLine(message);
+
                 }
 
 

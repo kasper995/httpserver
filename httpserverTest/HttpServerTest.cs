@@ -26,7 +26,7 @@ namespace httpserverTest
             Assert.AreEqual("HTTP/1.0 200 OK", line);
 
             line = GetFirstLine("GET /fileDoesNotExist.txt HTTP/1.0");
-            Assert.AreEqual("HTTP/1.0 400 Bad Request", line);
+            Assert.AreEqual("HTTP/1.0 404 Not Found", line);
         }
 
 
@@ -34,21 +34,21 @@ namespace httpserverTest
         public void TestGetIllegalRequest()
         {
             String line = GetFirstLine("GET /file.txt HTTP 1.0");
-            Assert.AreEqual("HTTP/1.0 400 Illegal request", line);
+            Assert.AreEqual("HTTP/1.0 400 Bad Request", line);
         }
 
         [TestMethod]
         public void TestGetIllegalMethodName()
         {
             String line = GetFirstLine("PLET /file.txt HTTP/1.0");
-            Assert.AreEqual("HTTP/1.0 400 Illegal request", line);
+            Assert.AreEqual("HTTP/1.0 400 Bad Request", line);
         }
 
         [TestMethod]
         public void TestGetIllegalProtocol()
         {
             String line = GetFirstLine("GET /file.txt HTTP/1.2");
-            Assert.AreEqual("HTTP/1.0 400 Illegal protocol", line);
+            Assert.AreEqual("HTTP/1.0 400 Bad Request", line);
         }
 
         [TestMethod]
