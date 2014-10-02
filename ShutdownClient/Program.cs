@@ -4,19 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace httpserver
+namespace ShutdownClient
 {
-    
     class Program
     {
-        
+        private static ShutDownClient _client;
         static void Main(string[] args)
         {
-            Console.Title = "HTTP Server";
-                HttpServer h1 = new HttpServer(); //laver den nye server
-                h1.StartServer();
-                
+            Console.Title = "Shut Down Client";
+            _client = new ShutDownClient();
+            _client._ShutDownClient();
         }
     }
 }

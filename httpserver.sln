@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "httpserver", "httpserver\httpserver.csproj", "{B86C3B46-C946-4AC4-84A3-3BEF3E2B9BA6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "httpserverTest", "httpserverTest\httpserverTest.csproj", "{BDCD57A0-4228-49C6-9261-AF2B5AE7C784}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShutdownClient", "ShutdownClient\ShutdownClient.csproj", "{8D945A37-53FF-49B7-8DC8-EA03748A17AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{BDCD57A0-4228-49C6-9261-AF2B5AE7C784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDCD57A0-4228-49C6-9261-AF2B5AE7C784}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDCD57A0-4228-49C6-9261-AF2B5AE7C784}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D945A37-53FF-49B7-8DC8-EA03748A17AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D945A37-53FF-49B7-8DC8-EA03748A17AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D945A37-53FF-49B7-8DC8-EA03748A17AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D945A37-53FF-49B7-8DC8-EA03748A17AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

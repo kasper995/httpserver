@@ -74,10 +74,12 @@ namespace httpserver
 
                     if (message == "POST /close HTTP/1.0" || words[1] == "/This.Close")
                     {
+
                         Console.WriteLine("Server is shutting down");
-                        Thread th1 = new Thread(_ServerShutdown);
-                        Thread.Sleep(5000);
                         Task.WaitAll();
+                        Thread.Sleep(5000);
+                        Thread th1 = new Thread(_ServerShutdown);
+                        
                         ns.Close();
                         _serverSocket.Stop();
                         th1.Start();
