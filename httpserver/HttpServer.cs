@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Mime;
 using System.Net.Sockets;
 using System.Reflection.Emit;
+using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -27,14 +28,14 @@ namespace httpserver
         private const string RootCatalog = "C:\\Temp"; //rootcaltalog som angiver stien til filen
         readonly EventLog _mylog = new EventLog();
 
-
+        
         readonly TcpListener _serverSocket = new TcpListener(IPAddress.Any, DefaultPort); // laver serveren
-
-
+        private bool running = true;
+     
         public void StartServer()
         {
             _mylog.Source = "myserver";
-            while (true)
+            while (running)
             {
                 _serverSocket.Start(); //starter serveren
                 TcpClient connectionSocket = _serverSocket.AcceptTcpClient(); //sætter sockets til at acceptere clienten
@@ -46,6 +47,10 @@ namespace httpserver
             }
         }
 
+        public void _ServerShutdown()
+        {
+            running = false;
+        }
         public void Sockethandler(Stream ns)
         {
             StreamReader sr = new StreamReader(ns); // laver en streamreader der hedder sr
@@ -67,11 +72,20 @@ namespace httpserver
                     var f1 = new FileInfo(path);
 
 
+                    if (message == "POST /close HTTP/1.0" || words[1] == "/This.Close")
+                    {
+                        Console.WriteLine("Server is shutting down");
+                        Thread th1 = new Thread(_ServerShutdown);
+                        Thread.Sleep(5000);
+                        Task.WaitAll();
+                        ns.Close();
+                        _serverSocket.Stop();
+                        th1.Start();
+                    }
+                    
 
 
-
-
-                    if (words[2] != "HTTP/1.1" && words[2] != "HTTP/1.0") //checker om http versionen er 1.1
+                    else  if (words[2] != "HTTP/1.1" && words[2] != "HTTP/1.0") //checker om http versionen er 1.1
                     {
                         sw.Write("{0} 400 Bad Request\r\n", Version);
                         // sender header til browserensw.Write("\r\n"); // lineskift så den ved det er body der kommer som det næste
@@ -100,20 +114,17 @@ namespace httpserver
                     }
                     else if (File.Exists(path))
                     {
-
-
-
                         sw.Write("{0} 200 OK\r\n", Version); // sender header til browseren
                         sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
                         string ftext = File.ReadAllText(path);
                         // samler filnen i en string der hedder ftext hvis den kan læses
                         sw.Write(ftext); // sender stringen til browseren så den kan læses
                         Console.WriteLine("{0} 200 OK", Version);
-
                         var f2 = f1.Length;
                         Console.WriteLine("Content-Length: " + f2);
-
                     }
+
+                   
 
                     else
                     {
@@ -130,8 +141,8 @@ namespace httpserver
                     Console.WriteLine(time); // skriver tiden ud til consol
                     Console.WriteLine("someone searched for {0}", path); //skriver ud til consolen 
                     Console.WriteLine(type.Exstensiontype());
-                    Console.WriteLine(words[0]);
-                    Console.WriteLine(words[2]);
+                    Console.WriteLine(words[1]);
+                    
                     Console.WriteLine(message);
 
                 }
@@ -154,6 +165,7 @@ namespace httpserver
                 _serverSocket.Stop(); // lukker serversocket ned
             }
         }
+        
     }
 }
 
