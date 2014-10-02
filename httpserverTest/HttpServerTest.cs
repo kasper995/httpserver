@@ -10,13 +10,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace httpserverTest
 {
-    
+   
     [TestClass]
     
     public class HttpServerTest
     {
-        
-
         private const string CrLf = "\r\n";
 
         [TestMethod]

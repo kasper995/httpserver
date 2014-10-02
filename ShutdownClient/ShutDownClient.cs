@@ -10,34 +10,21 @@ namespace ShutdownClient
 {
     class ShutDownClient
     {
-      public void _ShutDownClient()
+        public void _ShutDownClient()
         {
-          //waits for the user input
-          Console.ReadKey();
-          //creates a clientSocket  that will be used in establishig a connection to the server
-          //with servers address i.e ip and port number
-          TcpClient clientSocket = new TcpClient("localhost", 8888);
-
-            
-          //Gets the network stream from the connection and use it communicate with the server
-        
-              Stream ns = clientSocket.GetStream();
-              StreamWriter sw = new StreamWriter(ns);
-              sw.AutoFlush = true;
-              //reads input from user and sends it to the server
-          Console.ReadKey();
-          string message = "POST /close HTTP/1.0";
-          Console.WriteLine(message);
-              sw.WriteLine(message);
-          Console.WriteLine("message send");
-          Console.ReadKey();
-              ns.Dispose();
-          
-          
-
-            //ns.Close();
+            Console.WriteLine("Press any key to start shutdown process");
+            Console.ReadKey();
+            TcpClient clientSocket = new TcpClient("localhost", 8888);
+            Stream ns = clientSocket.GetStream();
+            StreamWriter sw = new StreamWriter(ns);
+            sw.AutoFlush = true;
+            string message = "POST /close HTTP/1.0";
+            Console.WriteLine(message);
+            sw.WriteLine(message);
+            Console.WriteLine("message send");
+            Console.ReadKey();
+            ns.Dispose();
             clientSocket.Close();
-
         }
     }
 }

@@ -7,16 +7,13 @@ using System.Threading.Tasks;
 
 namespace httpserver
 {
-    
     class Program
     {
-        
         static void Main(string[] args)
         {
             Console.Title = "HTTP Server";
-                HttpServer h1 = new HttpServer(); //laver den nye server
-                h1.StartServer();
-                
+            HttpServer h1 = new HttpServer(); //laver den nye server
+            h1.StartServer();
         }
     }
 }

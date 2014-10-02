@@ -8,26 +8,21 @@ using System.Threading.Tasks;
 
 namespace httpserver
 {
-    internal class HTTPService
+    internal class HttpService
     {
+        private readonly TcpClient _connectionSocket;
 
-        private readonly TcpClient connectionSocket;
-
-
-        public HTTPService(TcpClient connectionSocket)
+        public HttpService(TcpClient connectionSocket)
         {
-            this.connectionSocket = connectionSocket;
+            _connectionSocket = connectionSocket;
         }
 
         internal void SocketHandler()
         {
-            Stream ns = connectionSocket.GetStream();
+            Stream ns = _connectionSocket.GetStream();
             var sr = new StreamReader(ns);
             var sw = new StreamWriter(ns) {AutoFlush = true};
-
-
-            connectionSocket.Close();
-
+            _connectionSocket.Close();
         }
     }
 }

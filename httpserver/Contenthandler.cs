@@ -10,13 +10,11 @@ namespace httpserver
     public class Contenthandler
     {
         private readonly string _exstensions;
-
         public Contenthandler(string extensions)
         {
-             _exstensions = extensions;
+            _exstensions = extensions;
         }
-
-       public string Exstensiontype()
+        public string Exstensiontype()
         {
             const string output = "content type: ";
 
@@ -57,9 +55,7 @@ namespace httpserver
                 return output + "application/x-java-archive";
             }
 
-           return output + "application/octet-stream";
-
+            return output + "application/octet-stream";
         }
-
     }
 }
