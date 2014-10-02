@@ -11,9 +11,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace httpserverTest
 {
-   
+
     [TestClass]
-    
+
     public class HttpServerTest
     {
         private const string CrLf = "\r\n";
@@ -64,26 +64,26 @@ namespace httpserverTest
         /// <returns></returns>
         private static String GetFirstLine(String request)
         {
-            httpserver.HttpServer th1 = new HttpServer();
-            Thread t1 = new Thread(th1.StartServer);
-            Thread t2 = new Thread(th1._ServerShutdown);
+            var th1 = new HttpServer();
+            var t1 = new Thread(th1.StartServer);
+            var t2 = new Thread(th1._ServerShutdown);
             t1.Start();
-            TcpClient client = new TcpClient("localhost", HttpServer.DefaultPort);
+            var client = new TcpClient("localhost", HttpServer.DefaultPort);
             NetworkStream networkStream = client.GetStream();
 
-            StreamWriter toServer = new StreamWriter(networkStream, Encoding.UTF8);
+            var toServer = new StreamWriter(networkStream, Encoding.UTF8);
             toServer.Write(request + CrLf);
             toServer.Write(CrLf);
             toServer.Flush();
 
-            StreamReader fromServer = new StreamReader(networkStream);
+            var fromServer = new StreamReader(networkStream);
             String firstline = fromServer.ReadLine();
             t2.Start();
             toServer.Close();
             fromServer.Close();
             client.Close();
             return firstline;
-            
+
         }
     }
 }
