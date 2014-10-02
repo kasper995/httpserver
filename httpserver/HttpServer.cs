@@ -41,6 +41,7 @@ namespace httpserver
                 Stream ns = connectionSocket.GetStream(); //laver en stream
                 Sockethandler(ns);
                 Task t1 = Task.Run(() => Sockethandler(ns));
+                
                 connectionSocket.Close(); // lukker connectionsocket ned
             }
         }
@@ -49,14 +50,14 @@ namespace httpserver
         {
             StreamReader sr = new StreamReader(ns); // laver en streamreader der hedder sr
             StreamWriter sw = new StreamWriter(ns) { AutoFlush = true }; // laver en streamwriter der hedder sw
-            _mylog.WriteEntry("Server started", EventLogEntryType.Information, 1);
+            //_mylog.WriteEntry("Server started", EventLogEntryType.Information, 1);
             try
             {
                 string message = sr.ReadLine(); // læser htlm requesten
 
                 if (message != null) // checker om requesten er tom
                 {
-                    _mylog.WriteEntry("Browser request modtaget", EventLogEntryType.Information, 2);
+                    //_mylog.WriteEntry("Browser request modtaget", EventLogEntryType.Information, 2);
 
                     string[] words = message.Split(' '); //laver et array med ordene fra message så hvert ord 
                     string name = words[1].Replace("/", "\\"); // bytter alle / ud med \, 
@@ -80,12 +81,13 @@ namespace httpserver
                         Console.WriteLine("{0} 400 Bad Request", Version);
                     }
 
-                    else if (words[0] != "GET" && words[0] != "POST") // hvis det først ord i din request ikke er post eller get så gør
+                    else if (words[0] != "GET" && words[0] != "POST")
+                        // hvis det først ord i din request ikke er post eller get så gør
                     {
                         sw.Write("{0} 400 Bad Request\r\n", Version); // sender header til browseren
                         sw.Write("{0}", Line); // lineskift så den ved det er body der kommer som det næste
                         sw.Write("Bad Request did not send a Get or Post request");
-                        // sender svar tilbage til browseren om at protokolen er forkert
+                            // sender svar tilbage til browseren om at protokolen er forkert
                         Console.WriteLine("{0} 400 Bad Request", Version);
                     }
 
@@ -96,7 +98,7 @@ namespace httpserver
                         sw.Write("dadada");
 
                     }
-                    else  if (File.Exists(path))
+                    else if (File.Exists(path))
                     {
 
 
@@ -121,9 +123,10 @@ namespace httpserver
                         // sender svar tilbage til browseren om at serveren ikke har det de søger
                         Console.WriteLine("{0} 404 Not Found", Version);
                     }
-                    _mylog.WriteEntry("Browser har modtaget svar på request", EventLogEntryType.Information, 3);
+                    //_mylog.WriteEntry("Browser har modtaget svar på request", EventLogEntryType.Information, 3);
 
-                    string time = DateTime.Today.ToLongDateString() + " " + DateTime.Now.ToLongTimeString(); // laver en string der gemmer tiden lige nu
+                    string time = DateTime.Today.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
+                        // laver en string der gemmer tiden lige nu
                     Console.WriteLine(time); // skriver tiden ud til consol
                     Console.WriteLine("someone searched for {0}", path); //skriver ud til consolen 
                     Console.WriteLine(type.Exstensiontype());
@@ -135,12 +138,16 @@ namespace httpserver
 
 
             }
-
+            catch (Exception)
+            {
+                StartServer();
+                throw new Exception();
+            }
 
 
             finally
             {
-                _mylog.WriteEntry("server lukker ned", EventLogEntryType.Information, 4);
+                //_mylog.WriteEntry("server lukker ned", EventLogEntryType.Information, 4);
 
                 ns.Close(); // lukker streamen ns ned
 
