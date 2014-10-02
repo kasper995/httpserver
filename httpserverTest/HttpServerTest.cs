@@ -66,7 +66,7 @@ namespace httpserverTest
         {
             var th1 = new HttpServer();
             var t1 = new Thread(th1.StartServer);
-            var t2 = new Thread(th1._ServerShutdown);
+            
             t1.Start();
             var client = new TcpClient("localhost", HttpServer.DefaultPort);
             NetworkStream networkStream = client.GetStream();
@@ -78,7 +78,8 @@ namespace httpserverTest
 
             var fromServer = new StreamReader(networkStream);
             String firstline = fromServer.ReadLine();
-            t2.Start();
+            
+            
             toServer.Close();
             fromServer.Close();
             client.Close();
