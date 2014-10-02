@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using httpserver;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -63,6 +64,10 @@ namespace httpserverTest
         /// <returns></returns>
         private static String GetFirstLine(String request)
         {
+            httpserver.HttpServer th1 = new HttpServer();
+            Thread t1 = new Thread(th1.StartServer);
+            Thread t2 = new Thread(th1._ServerShutdown);
+            t1.Start();
             TcpClient client = new TcpClient("localhost", HttpServer.DefaultPort);
             NetworkStream networkStream = client.GetStream();
 
@@ -73,11 +78,12 @@ namespace httpserverTest
 
             StreamReader fromServer = new StreamReader(networkStream);
             String firstline = fromServer.ReadLine();
+            t2.Start();
             toServer.Close();
             fromServer.Close();
             client.Close();
             return firstline;
-
+            
         }
     }
 }
